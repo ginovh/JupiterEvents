@@ -24,40 +24,45 @@ void run(double start_date, double period, vector<string> &event_list) {
     int old_n = 0;
 
     for ( double x = start_date; x< (start_date+period); x+=(1.0/(24*60)) ) {  // res = 1m
-        CAAEllipticalPlanetaryDetails JupiterDetails = CAAElliptical::Calculate(x, CAAElliptical::JUPITER);
+        CAAEllipticalPlanetaryDetails JupiterDetails =
+                CAAElliptical::Calculate(x, CAAElliptical::JUPITER);
         CAAGalileanMoonsDetails GalileanDetails = CAAGalileanMoons::Calculate(x);
         n = GalileanDetails.Satellite1.bInShadowTransit +
         + GalileanDetails.Satellite2.bInShadowTransit
         + GalileanDetails.Satellite3.bInShadowTransit
         + GalileanDetails.Satellite4.bInShadowTransit
         + GalileanDetails.Satellite3.bInTransit
-        + GalileanDetails.Satellite4.bInTransit
-        ;
+        + GalileanDetails.Satellite4.bInTransit;
 
         const int minimum_number_of_events = 2;
-        if ( ( n >= minimum_number_of_events ) && (old_n!=n) ) {
+        if ( (n >= minimum_number_of_events) && (old_n != n) ) {
             // Turnhout -4.95, 51.32
             // to calculate altitude of planet and sun
-            CAAEllipticalPlanetaryDetails SunDetails = CAAElliptical::Calculate(x, CAAElliptical::SUN);
+            CAAEllipticalPlanetaryDetails SunDetails =
+                    CAAElliptical::Calculate(x, CAAElliptical::SUN);
             double AST = CAASidereal::ApparentGreenwichSiderealTime(x);
             double LongtitudeAsHourAngle =
-            CAACoordinateTransformation::DegreesToHours(CAACoordinateTransformation::DMSToDegrees(-4, 95, 0));
+            CAACoordinateTransformation::DegreesToHours(
+                        CAACoordinateTransformation::DMSToDegrees(-4, 95, 0));
 
-            double Alpha = JupiterDetails.ApparentGeocentricRA ;
+            double Alpha = JupiterDetails.ApparentGeocentricRA;
             double LocalHourAngle = AST - LongtitudeAsHourAngle - Alpha;
             CAA2DCoordinate JupiterHorizontal =
             CAACoordinateTransformation::Equatorial2Horizontal(LocalHourAngle,
             JupiterDetails.ApparentGeocentricDeclination,
             CAACoordinateTransformation::DMSToDegrees(51, 32, 0) );
 
-            Alpha = SunDetails.ApparentGeocentricRA ;
+            Alpha = SunDetails.ApparentGeocentricRA;
             LocalHourAngle = AST - LongtitudeAsHourAngle - Alpha;
-            CAA2DCoordinate SunHorizontal = CAACoordinateTransformation::Equatorial2Horizontal(LocalHourAngle,
-            SunDetails.ApparentGeocentricDeclination, CAACoordinateTransformation::DMSToDegrees(51, 32, 0) );
+            CAA2DCoordinate SunHorizontal =
+                    CAACoordinateTransformation::Equatorial2Horizontal(
+                        LocalHourAngle,
+                        SunDetails.ApparentGeocentricDeclination,
+                        CAACoordinateTransformation::DMSToDegrees(51, 32, 0) );
 
             // if ( (JupiterHorizontal.Y>0) && (SunHorizontal.Y<0) ) {
-            if ( (JupiterHorizontal.Y>0) ) {
-                CAADate nu(x,true);
+            if ( (JupiterHorizontal.Y > 0) ) {
+                CAADate nu(x, true);
                 ostringstream os;
                 os <<  right << setw(2) << nu.Day() << "/"
                 << setw(2) << nu.Month() << "/"
@@ -80,7 +85,7 @@ void run(double start_date, double period, vector<string> &event_list) {
                 event_list.push_back(os.str());
             }
         }
-        old_n=n;
+        old_n = n;
     }
 }
 
@@ -96,8 +101,8 @@ int main(int argc, char *argv[]) {
         startyear = atoi(argv[1]);
     }
 
-    CAADate begin_date(startyear,1,1,0,0,0,true);
-    CAADate end_date(startyear + 1,1,1,0,0,0,true);
+    CAADate begin_date(startyear, 1, 1, 0, 0, 0, true);
+    CAADate end_date(startyear + 1, 1, 1, 0, 0, 0, true);
     double periode = end_date.Julian() - begin_date.Julian();
 
     vector<string> event_list1, event_list2, event_list3, event_list4;
