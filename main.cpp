@@ -1,27 +1,29 @@
-#include "stdafx.h"
-#include "AA+.h"
+#include <time.h>
+
 #include <iostream>
 #include <iomanip>
 #include <vector>
 #include <sstream>
-#include <time.h>
 #include <thread>
+
+#include "stdafx.h"
+#include "AA+.h"
 
 using namespace std;
 
 #ifdef _MSC_VER
-#pragma warning(push) //We're not interested in unreferrenced variables in this test app 
+#pragma warning(push)  // We're not interested in unreferrenced variables in this test app
 #pragma warning(disable : 4101)
 #pragma warning(disable : 4189)
 #endif
 
 
-void run(double start_date, double period, vector<string> &event_list) {	
+void run(double start_date, double period, vector<string> &event_list) {
     
 	int n = 0;
 	int old_n = 0;
     
-	for ( double x = start_date; x< (start_date+period); x+=(1.0/(24*60)) ) { // res = 1m
+	for ( double x = start_date; x< (start_date+period); x+=(1.0/(24*60)) ) {  // res = 1m
 		CAAEllipticalPlanetaryDetails JupiterDetails = CAAElliptical::Calculate(x, CAAElliptical::JUPITER);
 		CAAGalileanMoonsDetails GalileanDetails = CAAGalileanMoons::Calculate(x);
 		n = GalileanDetails.Satellite1.bInShadowTransit +
@@ -82,15 +84,21 @@ void run(double start_date, double period, vector<string> &event_list) {
 	}
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-	//CAADate date1(2012,1,1,0,0,0,true);
-	//CAADate date2(2013,1,1,0,0,0,true);
 	clock_t start, end;
 	start = clock();
+	unsigned int startyear = 2014;
     
-	CAADate begin_date(2014,1,1,0,0,0,true);
-	CAADate end_date(2015,1,1,0,0,0,true);
+	if ( argc != 2 ) {
+	    cout << "usage: " << argv[0] << " year \n";
+		exit(1);
+	} else {
+		startyear = atoi(argv[1]);
+	}
+		
+	CAADate begin_date(startyear,1,1,0,0,0,true);
+	CAADate end_date(startyear + 1,1,1,0,0,0,true);
 	double periode = end_date.Julian() - begin_date.Julian();
     
 	vector<string> event_list1, event_list2, event_list3, event_list4;
