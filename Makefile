@@ -1,5 +1,5 @@
 all:
-	g++ -std=c++11 main.cpp -Iaaplus/ -Laaplus/lib -laaplus -Wl,-rpath,"aaplus/lib" -pthread
+	g++ -std=c++11 main.cpp -Iaaplus/ -Laaplus/lib -laaplus -Wl,-rpath,"aaplus/lib" -pthread -o jupevent
 
 aaplus:
 	rm -rf aaplus
@@ -13,9 +13,9 @@ inside_aaplus:
 	make -j4
 
 run:
-	./a.out
+	./jupevent 2014
 	
 clean:
-	rm -f a.out *~
+	rm -f jupevent *~
 
 .PHONY: aaplus
