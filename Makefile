@@ -1,5 +1,5 @@
 all:
-	g++ -std=c++11 main.cpp -Iaaplus/ -Laaplus/lib -laaplus -Wl,-rpath,"aaplus/lib" -pthread -o jupevent
+	g++ main.cpp -Iaaplus/ -Laaplus/lib -laaplus -Wl,-rpath,"aaplus/lib" -pthread -o jupevent
 
 aaplus:
 	rm -rf aaplus
@@ -9,11 +9,11 @@ aaplus:
 inside_aaplus:
 	curl http://www.naughter.com/download/aaplus.zip -o aaplus.zip
 	unzip aaplus.zip
-	cmake . 
+	cmake .
 	make -j4
 
 run:
-	./jupevent 2014
+	./jupevent 2014 2014
 	
 clean:
 	rm -f jupevent *~

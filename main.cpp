@@ -6,6 +6,7 @@
 #include <sstream>
 #include <thread>
 #include <string>
+#include <functional>
 
 #include "stdafx.h"
 #include "AA+.h"
@@ -25,8 +26,8 @@ void run(double start_date, double period, vector<string> &event_list) {
 
     for ( double x = start_date; x< (start_date+period); x+=(1.0/(24*60)) ) {  // res = 1m
         CAAEllipticalPlanetaryDetails JupiterDetails =
-                CAAElliptical::Calculate(x, CAAElliptical::JUPITER);
-        CAAGalileanMoonsDetails GalileanDetails = CAAGalileanMoons::Calculate(x);
+                CAAElliptical::Calculate(x, CAAElliptical::EllipticalObject::JUPITER, false);
+        CAAGalileanMoonsDetails GalileanDetails = CAAGalileanMoons::Calculate(x, false);
         n = GalileanDetails.Satellite1.bInShadowTransit +
         + GalileanDetails.Satellite2.bInShadowTransit
         + GalileanDetails.Satellite3.bInShadowTransit
@@ -39,7 +40,7 @@ void run(double start_date, double period, vector<string> &event_list) {
             // Turnhout -4.95, 51.32
             // to calculate altitude of planet and sun
             CAAEllipticalPlanetaryDetails SunDetails =
-                    CAAElliptical::Calculate(x, CAAElliptical::SUN);
+                    CAAElliptical::Calculate(x, CAAElliptical::EllipticalObject::SUN, false);
             double AST = CAASidereal::ApparentGreenwichSiderealTime(x);
             double LongtitudeAsHourAngle =
             CAACoordinateTransformation::DegreesToHours(
@@ -93,16 +94,18 @@ int main(int argc, char *argv[]) {
     clock_t start, end;
     start = clock();
     unsigned int startyear = 2014;
+    unsigned int endyear = 2014;
 
-    if ( argc != 2 ) {
-        cout << "usage: " << argv[0] << " year \n";
+    if ( argc != 3 ) {
+        cout << "usage: " << argv[0] << " startyear endyear\n";
         exit(1);
     } else {
         startyear = atoi(argv[1]);
+        endyear = atoi(argv[2]);
     }
 
     CAADate begin_date(startyear, 1, 1, 0, 0, 0, true);
-    CAADate end_date(startyear + 1, 1, 1, 0, 0, 0, true);
+    CAADate end_date(endyear, 12, 31, 23, 59, 59, true);
     double periode = end_date.Julian() - begin_date.Julian();
 
     vector<string> event_list1, event_list2, event_list3, event_list4;
